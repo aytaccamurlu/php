@@ -31,3 +31,24 @@ EXPOSE 80
 
 # Apache'yi başlatıyoruz
 CMD ["apache2-foreground"]
+FROM php:8.2-apache
+
+# Gerekli sistem paketleri ve PHP eklentileri
+RUN apt-get update && apt-get install -y \
+    libpng-dev libonig-dev libxml2-dev zip unzip git curl
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+
+# Apache modülünü aktif et
+RUN a2enmod rewrite
+
+# Çalışma dizini
+WORKDIR /var/www/html
+
+# GitHub'daki tüm klasörleri (16 uygulamanın hepsini) kopyalar
+COPY . .
+
+# Apache'nin dosyalara erişebilmesi için izinleri ayarla
+RUN chown -R www-data:www-data /var/www/html && chmod -R 755 /var/www/html
+
+EXPOSE 80
+CMD ["apache2-foreground"]
