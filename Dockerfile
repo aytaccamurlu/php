@@ -23,10 +23,6 @@ WORKDIR /var/www/html
 # Proje dosyalarını kopyalıyoruz
 COPY . .
 
-# Composer kurulumu
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-RUN composer install --no-interaction --optimize-autoloader --no-dev
-
 # Dosya izinlerini ayarlıyoruz (Apache için)
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/cache 2>/dev/null || true
 
